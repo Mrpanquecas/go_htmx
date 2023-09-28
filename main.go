@@ -19,9 +19,8 @@ type PageData struct {
 	Todos []Todo
 }
 
-func todo(w http.ResponseWriter, r *http.Request) {
+func show_todo(w http.ResponseWriter, r *http.Request) {
 	templ = template.Must(template.ParseFiles("static/templates/index.html"))
-	templ.Execute(w, nil)
 	data := PageData{
 		Title: "Todo List",
 		Todos: []Todo{
@@ -30,11 +29,19 @@ func todo(w http.ResponseWriter, r *http.Request) {
 			{Item: "learn more go", Done: false},
 		},
 	}
-	fmt.Print(data)
+	templ.Execute(w, data)
 }
 
+func add_todo(w http.ResponseWriter, r *http.Request) {
+	todo_title := r.PostFormValue("todo-item")
+	todo_status := r.PostFormValue("todo-done")
+	fmt.Println(todo_title)
+	fmt.Println(todo_status)
+
+}
 func main() {
 
-	http.HandleFunc("/", todo)
+	http.HandleFunc("/add-todo/", add_todo)
+	http.HandleFunc("/", show_todo)
 	log.Fatal(http.ListenAndServe(":80", nil))
 }
