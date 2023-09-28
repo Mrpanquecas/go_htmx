@@ -1,33 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
+	<head>
+		<!-- TODO: refactor tailwind implementation, must not use cdn -->
+		<script src="https://cdn.tailwindcss.com"></script>
+		<script
+			src="https://unpkg.com/htmx.org@1.9.6"
+			integrity="sha384-FhXw7b6AlE/jyjlZH5iHa/tTe9EpJ1Y55RjcgPbjeWMskSxZt1v9qkxLJWNJaGni"
+			crossorigin="anonymous"
+		></script>
+	</head>
 
-<head>
-    <!-- TODO: refactor tailwind implementation, must not use cdn -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/htmx.org@1.9.6"
-        integrity="sha384-FhXw7b6AlE/jyjlZH5iHa/tTe9EpJ1Y55RjcgPbjeWMskSxZt1v9qkxLJWNJaGni"
-        crossorigin="anonymous"></script>
-</head>
+	<body>
+		<h1>Hello my world</h1>
+		<ul id="todo-list">
+			{{range .Todos}}
+                {{block "todo-list-item" .}}
+                    <li>
+                        <p class="bg-red-400">{{.Item}} - {{.Done}}</p>
+                    </li>
+			    {{end}}
+            {{end}}
+		</ul>
 
-<body>
-    <h1>Hello my world</h1>
-    {{range .Todos}}
-
-    <p class="bg-red-400">{{.Item}} - {{.Done}}</p>
-    {{end}}
-
-
-    <form hx-post="/add-todo/">
-        <div>
-            <label for="todo-item">Todo item label</label>
-            <input type="text" name="todo-item">
-        </div>
-        <div>
-            <label for="todo-item">Todo item status</label>
-            <input type="checkbox" name="todo-done">
-        </div>
-        <button type="submit"> add todo</button>
-    </form>
-</body>
-
+		<form
+			hx-post="/add-todo/"
+			hx-target="#todo-list"
+			hx-swap="beforeend"
+			htmx-indicator="#spinner"
+		>
+			<div>
+				<label for="todo-item">Todo item label</label>
+				<input type="text" name="todo-item" />
+			</div>
+			<div>
+				<label for="todo-item">Todo item status</label>
+				<input type="checkbox" name="todo-done" />
+			</div>
+			<button type="submit" class="bg-red-300 p-2 px-4">
+				<span
+					class="animate-spin w-4 h-4 bg-blue-500 mr-2 htmx-indicator"
+					id="spinner"
+					role="status"
+				>
+				</span>
+				add todo
+			</button>
+		</form>
+	</body>
 </html>

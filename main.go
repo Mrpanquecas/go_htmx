@@ -1,10 +1,11 @@
 package main
 
 import (
-	"fmt"
 	"html/template"
 	"log"
 	"net/http"
+	"strconv"
+	"time"
 )
 
 var templ *template.Template
@@ -33,11 +34,12 @@ func show_todo(w http.ResponseWriter, r *http.Request) {
 }
 
 func add_todo(w http.ResponseWriter, r *http.Request) {
+	// To emulate latency
+	time.Sleep(1 * time.Second)
+	todo_status, _ := strconv.ParseBool(r.PostFormValue("todo-done"))
 	todo_title := r.PostFormValue("todo-item")
-	todo_status := r.PostFormValue("todo-done")
-	fmt.Println(todo_title)
-	fmt.Println(todo_status)
-
+	templ = template.Must(template.ParseFiles("static/templates/index.html"))
+	templ.ExecuteTemplate(w, "todo-list-item", Todo{Item: todo_title, Done: todo_status})
 }
 func main() {
 
